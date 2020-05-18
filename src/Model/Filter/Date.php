@@ -4,6 +4,8 @@
 namespace App\Model\Filter;
 
 use Search\Model\Filter\Base;
+use DateTime;
+use DateInterval;
 
 /**
  * Class Date
