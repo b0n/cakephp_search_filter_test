@@ -66,4 +66,18 @@ class TopicsControllerTest extends TestCase
         $this->get('/topics?q=' . rawurlencode('テ　ス　ト'));
         $this->assertResponseNotContains('テスト投稿です');
     }
+
+    /**
+     */
+    public function testIndexSpace()
+    {
+        $this->get('/topics?space=' . rawurlencode('スト'));
+        $this->assertResponseContains('テスト投稿です');
+
+        $this->get('/topics?space=' . rawurlencode('テ　トリ ス'));
+        $this->assertResponseNotContains('テスト投稿です');
+
+        $this->get('/topics?space=' . rawurlencode('テ ス　ト'));
+        $this->assertResponseContains('テスト投稿です');
+    }
 }

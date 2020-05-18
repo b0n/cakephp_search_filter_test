@@ -41,7 +41,8 @@ class TopicsTable extends Table
         $this->addBehavior('Search.Search');
         $this->SearchManager()
             ->value('title')
-            ->like('q', ['field' => 'title', 'before' => true, 'after' => true]);
+            ->like('q', ['field' => 'title', 'before' => true, 'after' => true])
+            ->add('space', 'WithoutSpaceFilter', ['field' => 'title']);
     }
 
     /**
