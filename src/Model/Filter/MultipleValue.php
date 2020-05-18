@@ -6,7 +6,7 @@ namespace App\Model\Filter;
 use Search\Model\Filter\Base;
 
 /**
- * Class Date
+ * Class MultipleValue
  *
  * MultipleValueフィルタの動作を確認してみます
  *
@@ -16,10 +16,32 @@ use Search\Model\Filter\Base;
 class MultipleValue extends Base
 {
     /**
-     * @inheritDoc
+     * Process a LIKE condition ($x LIKE $y).
+     * Allow multiple values
+     *
+     * @return void
      */
     public function process()
     {
-        return true;
+        if ($this->skip()) {
+            return;
+        }
+        $values = explode($this->getConfig('delimiter'), $this->value());
+        $conditions = [];
+        foreach ($this->fields() as $field) {
+            $left = $field . ' ' . $this->getConfig('comparison');
+            if ($this->getConfig('acceptNull')) {
+                $newConditions = [];
+                foreach ($values as $value) {
+                    $newConditions[] = [$left => $value];
+                }
+                $conditions = ['OR' => [$this->getConfig('mode') => $newConditions, $field . ' IS NULL']];
+            } else {
+                foreach ($values as $value) {
+                    $conditions[] = [$left => $value];
+                }
+            }
+        }
+        $this->getQuery()->andWhere([$this->getConfig('mode') => $conditions]);
     }
 }
